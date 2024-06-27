@@ -1,7 +1,7 @@
 node{
 def mavenHome =  tool name : "mavenLatest"
 	stage('git'){
-	git 'https://github.com/ChaitanyaVamsi/maven-web-application.git'
+	git branch: 'development', url: 'https://github.com/ChaitanyaVamsi/maven-web-application.git'
 	}
 	stage('build'){
 	sh '$mavenHome/bin/mvn clean package'
