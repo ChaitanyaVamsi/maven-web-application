@@ -1,4 +1,9 @@
 node{
+
+echo "build number is {env.BUILD_NUMBER}"
+echo "build id is {env.BUILD_ID}"
+echo "Job name is {env.JOB_NAME}"
+echo "branch name is {env.BRANCH_NAME}"
 def mvnhome = tool name : "maven3.9.9"
 //git checkout
 stage('git'){
