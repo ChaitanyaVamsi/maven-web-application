@@ -26,6 +26,7 @@ pipeline {
                     // Ensure Dagger CLI is installed
                     sh 'curl -fsSL https://github.com/dagger/dagger/releases/download/v0.16.1/dagger-linux-amd64 -o /usr/local/bin/dagger'
                     sh 'chmod +x /usr/local/bin/dagger'
+sh 'dagger version'
                 }
             }
         }
