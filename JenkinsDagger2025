@@ -1,11 +1,7 @@
 pipeline {
     agent any
 
-    environment {
-        // Define Dagger cache location
-        DAGGER_CACHE_DIR = '/tmp/dagger_cache'
-    }
-
+   
     tools {
         maven "maven3.9.9"
     }
@@ -23,9 +19,7 @@ pipeline {
         stage('Setup Dagger CLI') {
             steps {
                 script {
-                    // Ensure Dagger CLI is installed
-                    sh 'curl -fsSL https://github.com/dagger/dagger/releases/download/v0.16.1/dagger-linux-amd64 -o /usr/local/bin/dagger'
-                    sh 'chmod +x /usr/local/bin/dagger'
+                   
 sh 'dagger version'
                 }
             }
