@@ -1,21 +1,36 @@
 pipeline {
     agent any
 
-   
+    environment {
+        // Define Dagger cache location
+        DAGGER_CACHE_DIR = '/tmp/dagger_cache'
+    }
+
+    tools {
+        maven "maven3.9.9"
+    }
+
+    options {
+        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '3')
+        timestamps()
+    }
+
+    parameters {
+        choice choices: ['master', 'development', 'qa'], description: 'Select branch', name: 'branchName'
+    }
 
     stages {
-     
-
-        stage('Verify Dagger Installation') {
+        stage('Setup Dagger CLI') {
             steps {
                 script {
-                    // Check if Dagger is installed correctly
-                    sh 'dagger version'
+                    // Ensure Dagger CLI is installed
+                    sh 'curl -fsSL https://github.com/dagger/dagger/releases/download/v0.16.1/dagger-linux-amd64 -o /usr/local/bin/dagger'
+                    sh 'chmod +x /usr/local/bin/dagger'
                 }
             }
         }
 
-  stage('Git Checkout') {
+        stage('Git Checkout') {
             steps {
                 script {
                     // Clone the repository using Dagger
@@ -71,8 +86,5 @@ pipeline {
         failure {
             echo "Pipeline execution failed!"
         }
-    }
-}
-
     }
 }
