@@ -2,9 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DAGGER_VERSION = "latest"
+        DAGGER_BIN_PATH = "/root/.dagger/bin"  // You can change this to your specific path if needed
     }
-
     stages {
         stage('Install Dagger') {
             steps {
