@@ -2,21 +2,31 @@ pipeline {
     agent any
 
     environment {
-        DAGGER_BIN_PATH = "/root/.dagger/bin"  // You can change this to your specific path if needed
+        DAGGER_BIN_PATH = "/var/lib/jenkins/.dagger/bin"  // Change path if needed
     }
+
     stages {
         stage('Install Dagger') {
             steps {
-                sh 'curl -fsSL https://dl.dagger.io/dagger/install.sh | bash'
-                sh 'export PATH=$PATH:/root/.dagger/bin'
- sh 'dagger version' 
+                script {
+                    // Install Dagger using the installation script
+                    sh '''#!/bin/bash
+                    curl -fsSL https://dl.dagger.io/dagger/install.sh | bash
+                    export PATH=$PATH:/root/.dagger/bin  # Ensure Dagger is available in PATH
+                    '''
+                     // Verify if Dagger was installed correctly
+                      sh 'echo $PATH'
+                    // Check if Dagger was installed successfully
+                    sh 'dagger version'  // Should print the Dagger version if installation was successful
+                }
             }
         }
 
-        stage('Checkout Code') {
+        stage('Git Checkout') {
             steps {
                 script {
-                    sh 'dagger run gitCheckout'  // Run the Git checkout step defined in Daggerfile
+                    // Run the Dagger command for Git Checkout
+                    sh 'dagger run gitCheckout'
                 }
             }
         }
@@ -24,34 +34,13 @@ pipeline {
         stage('Build Maven Project') {
             steps {
                 script {
-                    sh 'dagger run mavenBuild'  // Run the Maven build step with caching
+                    // Run the Dagger command for Maven build
+                    sh 'dagger run mavenBuild'
                 }
             }
         }
 
-        stage('Run SonarQube Scan') {
-            steps {
-                script {
-                    sh 'dagger run sonarScan'  // Run SonarQube analysis
-                }
-            }
-        }
-
-        stage('Deploy to Nexus') {
-            steps {
-                script {
-                    sh 'dagger run nexusDeploy'  // Deploy to Nexus Repository
-                }
-            }
-        }
-
-        stage('Deploy to Tomcat') {
-            steps {
-                script {
-                    sh 'dagger run tomcatDeploy'  // Deploy the WAR file to Tomcat
-                }
-            }
-        }
+        // Additional stages like SonarQube scan, Nexus deploy, etc. go here...
     }
 
     post {
