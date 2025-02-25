@@ -1,22 +1,10 @@
 pipeline {
     agent any
 
-    environment {
-        DAGGER_BIN_PATH = "/var/lib/jenkins/.dagger/bin"  // Path to the installed Dagger binary
-        PATH = "$DAGGER_BIN_PATH:$PATH"  // Update the PATH to include Dagger binary
-    }
+   
 
     stages {
-        stage('Install Dagger') {
-            steps {
-                script {
-                    // Install Dagger if not already installed
-                    sh '''#!/bin/bash
-                    curl -fsSL https://dl.dagger.io/dagger/install.sh | bash
-                    '''
-                }
-            }
-        }
+     
 
         stage('Verify Dagger Installation') {
             steps {
