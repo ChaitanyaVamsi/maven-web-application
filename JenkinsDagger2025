@@ -6,7 +6,7 @@ pipeline {
             steps {
                 script { 
 
-                    sh 'pip install dagger-io' // Ensure Dagger is installed
+                 
                     sh 'python3 dagger_pipeline.py'
                 }
             }
