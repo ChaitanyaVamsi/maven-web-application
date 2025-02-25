@@ -15,16 +15,64 @@ pipeline {
             }
         }
 
-        stage('Git Checkout') {
+  stage('Git Checkout') {
             steps {
                 script {
-                    // Run Dagger command
+                    // Clone the repository using Dagger
                     sh 'dagger run gitCheckout'
                 }
             }
         }
 
-        // Other stages as needed...
+        stage('Maven Build with Caching') {
+            steps {
+                script {
+                    // Run the Maven build using Dagger with distributed caching
+                    sh 'dagger run mavenBuild'
+                }
+            }
+        }
+
+        stage('SonarQube Scan') {
+            steps {
+                script {
+                    // Run SonarQube scan using Dagger
+                    sh 'dagger run sonarScan'
+                }
+            }
+        }
+
+        stage('Nexus Deployment') {
+            steps {
+                script {
+                    // Deploy to Nexus using Dagger
+                    sh 'dagger run nexusDeploy'
+                }
+            }
+        }
+
+        stage('Deploy to Tomcat') {
+            steps {
+                script {
+                    // Deploy WAR file to Tomcat server using SCP
+                    sh 'dagger run tomcatDeploy'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "Pipeline execution completed."
+        }
+        success {
+            echo "Pipeline executed successfully!"
+        }
+        failure {
+            echo "Pipeline execution failed!"
+        }
+    }
+}
 
     }
 }
