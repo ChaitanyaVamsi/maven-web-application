@@ -2,22 +2,27 @@ pipeline {
     agent any
 
     environment {
-        DAGGER_BIN_PATH = "/var/lib/jenkins/.dagger/bin"  // Change path if needed
+        DAGGER_BIN_PATH = "/var/lib/jenkins/.dagger/bin"  // Path to the installed Dagger binary
+        PATH = "$DAGGER_BIN_PATH:$PATH"  // Update the PATH to include Dagger binary
     }
 
     stages {
         stage('Install Dagger') {
             steps {
                 script {
-                    // Install Dagger using the installation script
+                    // Install Dagger if not already installed
                     sh '''#!/bin/bash
                     curl -fsSL https://dl.dagger.io/dagger/install.sh | bash
-                    export PATH=$PATH:/var/lib/jenkins/.dagger/bin  # Ensure Dagger is available in PATH
                     '''
-                     // Verify if Dagger was installed correctly
-                      sh 'echo $PATH'
-                    // Check if Dagger was installed successfully
-                    sh 'dagger version'  // Should print the Dagger version if installation was successful
+                }
+            }
+        }
+
+        stage('Verify Dagger Installation') {
+            steps {
+                script {
+                    // Check if Dagger is installed correctly
+                    sh 'dagger version'
                 }
             }
         }
@@ -25,33 +30,13 @@ pipeline {
         stage('Git Checkout') {
             steps {
                 script {
-                    // Run the Dagger command for Git Checkout
+                    // Run Dagger command
                     sh 'dagger run gitCheckout'
                 }
             }
         }
 
-        stage('Build Maven Project') {
-            steps {
-                script {
-                    // Run the Dagger command for Maven build
-                    sh 'dagger run mavenBuild'
-                }
-            }
-        }
+        // Other stages as needed...
 
-        // Additional stages like SonarQube scan, Nexus deploy, etc. go here...
-    }
-
-    post {
-        always {
-            echo "Pipeline finished, cleaning up."
-        }
-        success {
-            echo "Pipeline completed successfully."
-        }
-        failure {
-            echo "Pipeline failed."
-        }
     }
 }
