@@ -4,7 +4,9 @@ pipeline {
     stages {
         stage('Run Dagger Pipeline') {
             steps {
-                script {
+                script { // Use python3 -m pip for better compatibility
+                    sh 'python3 -m pip install --upgrade pip'
+
                     sh 'pip install dagger-io' // Ensure Dagger is installed
                     sh 'python3 dagger_pipeline.py'
                 }
