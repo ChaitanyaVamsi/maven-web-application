@@ -7,18 +7,16 @@ def gitCheckout(c):
     """Git Checkout Step"""
     with c.container().from_("alpine:3.18") as container:
         container.run(["apk", "add", "--no-cache", "git"])  # Install Git
-        container.run(["git", "clone", "https://github.com/ChaitanyaVamsi/maven-web-application.git"])  # Clone repo
+        container.run(["git", "clone", "https://github.com/your-username/your-repository.git"])  # Clone repo
     return container
 
 def mavenBuild(c):
     """Maven Build Step with Caching"""
-    # Use a container with Maven and JDK installed
     with c.container().from_("maven:3.9.9-openjdk-17") as container:
-        # Use Dagger caching for Maven dependencies
         cache = c.cache(CACHE_KEY)  # Cache Maven dependencies
         container.with_cache(cache)  # Attach cache to the container
         
-        # Run the Maven build command
+        # Run Maven build
         container.run(["mvn", "clean", "package"])
     return container
 
@@ -31,7 +29,7 @@ def sonarScan(c):
 def nexusDeploy(c):
     """Nexus Deployment Step"""
     with c.container().from_("maven:3.9.9-openjdk-17") as container:
-        container.run(["mvn", "deploy"])  # Deploy to Nexus repository
+        container.run(["mvn", "deploy"])  # Deploy to Nexus
     return container
 
 def tomcatDeploy(c):
