@@ -1,0 +1,68 @@
+pipeline {
+    agent any
+
+    environment {
+        DAGGER_VERSION = "latest"
+    }
+
+    stages {
+        stage('Install Dagger') {
+            steps {
+                sh 'curl -fsSL https://dl.dagger.io/dagger/install.sh | bash'
+                sh 'export PATH=$PATH:/root/.dagger/bin'
+            }
+        }
+
+        stage('Checkout Code') {
+            steps {
+                script {
+                    sh 'dagger run gitCheckout'  // Run the Git checkout step defined in Daggerfile
+                }
+            }
+        }
+
+        stage('Build Maven Project') {
+            steps {
+                script {
+                    sh 'dagger run mavenBuild'  // Run the Maven build step with caching
+                }
+            }
+        }
+
+        stage('Run SonarQube Scan') {
+            steps {
+                script {
+                    sh 'dagger run sonarScan'  // Run SonarQube analysis
+                }
+            }
+        }
+
+        stage('Deploy to Nexus') {
+            steps {
+                script {
+                    sh 'dagger run nexusDeploy'  // Deploy to Nexus Repository
+                }
+            }
+        }
+
+        stage('Deploy to Tomcat') {
+            steps {
+                script {
+                    sh 'dagger run tomcatDeploy'  // Deploy the WAR file to Tomcat
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "Pipeline finished, cleaning up."
+        }
+        success {
+            echo "Pipeline completed successfully."
+        }
+        failure {
+            echo "Pipeline failed."
+        }
+    }
+}
