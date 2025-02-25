@@ -2,6 +2,14 @@ pipeline {
     agent any
 
     stages {
+stage('Verify Dagger Installation') {
+            steps {
+                script {
+                    // Check if Dagger is installed correctly
+                    sh 'dagger version'
+                }
+            }
+        }
         stage('Run Dagger Pipeline') {
             steps {
                 script { 
