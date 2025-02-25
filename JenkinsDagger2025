@@ -11,9 +11,7 @@ pipeline {
         timestamps()
     }
 
-    parameters {
-        choice choices: ['master', 'development', 'qa'], description: 'Select branch', name: 'branchName'
-    }
+  
 
     stages {
         stage('Setup Dagger CLI') {
