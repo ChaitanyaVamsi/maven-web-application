@@ -12,7 +12,7 @@ pipeline {
                     // Install Dagger using the installation script
                     sh '''#!/bin/bash
                     curl -fsSL https://dl.dagger.io/dagger/install.sh | bash
-                    export PATH=$PATH:/root/.dagger/bin  # Ensure Dagger is available in PATH
+                    export PATH=$PATH:/var/lib/jenkins/.dagger/bin  # Ensure Dagger is available in PATH
                     '''
                      // Verify if Dagger was installed correctly
                       sh 'echo $PATH'
