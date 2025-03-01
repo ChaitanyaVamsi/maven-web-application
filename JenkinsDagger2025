@@ -35,25 +35,25 @@ pipeline {
 
     stage('Build with Dagger') {
       steps {
-        sh '${DAGGER_CLI} build'
+        sh '${DAGGER_CLI} up build'
       }
     }
 
     stage('Sonar Scan with Dagger') {
       steps {
-        sh '${DAGGER_CLI} sonar'
+        sh '${DAGGER_CLI} up sonar'
       }
     }
 
     stage('Deploy to Nexus with Dagger') {
       steps {
-        sh '${DAGGER_CLI} nexus'
+        sh '${DAGGER_CLI} up nexus'
       }
     }
 
     stage('Deploy to Tomcat with Dagger') {
       steps {
-        sh '${DAGGER_CLI} tomcat'
+        sh '${DAGGER_CLI} up tomcat'
       }
     }
   }
