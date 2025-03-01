@@ -31,25 +31,38 @@ pipeline {
       }
     }
 
-stage('Sonar Scan with Dagger') {
-  steps {
-    sh '${DAGGER_CLI} run --container golang:1.20 go run main.go sonar'
-  }
-}
+ stages {
+    stage('Install Go') {
+      steps {
+        sh 'wget https://go.dev/dl/go1.20.6.linux-amd64.tar.gz'
+        sh 'sudo rm -rf /usr/local/go'
+        sh 'sudo tar -C /usr/local -xzf go1.20.6.linux-amd64.tar.gz'
+      }
+    }
 
-stage('Deploy to Nexus with Dagger') {
-  steps {
-    sh '${DAGGER_CLI} run --container golang:1.20 go run main.go deployNexus'
-  }
-}
+    stage('Git Checkout') {
+      steps {
+        git 'https://github.com/ChaitanyaVamsi/maven-web-application.git'
+      }
+    }
 
-stage('Deploy to Tomcat with Dagger') {
-  steps {
-    sh '${DAGGER_CLI} run --container golang:1.20 go run main.go deployTomcat'
-  }
-}
+    stage('Sonar Scan with Dagger') {
+      steps {
+        sh 'export PATH=$PATH:/usr/local/go/bin && ${DAGGER_CLI} run go run main.go sonar'
+      }
+    }
 
+    stage('Deploy to Nexus with Dagger') {
+      steps {
+        sh 'export PATH=$PATH:/usr/local/go/bin && ${DAGGER_CLI} run go run main.go deployNexus'
+      }
+    }
 
+    stage('Deploy to Tomcat with Dagger') {
+      steps {
+        sh 'export PATH=$PATH:/usr/local/go/bin && ${DAGGER_CLI} run go run main.go deployTomcat'
+      }
+    }
   }
 
   post {
