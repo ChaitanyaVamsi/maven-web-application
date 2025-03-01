@@ -19,15 +19,7 @@ pipeline {
   }
 
   stages {
-   stage("dagger") {
-      steps {
-        sh '''
-          curl -fsSL https://dl.dagger.io/dagger/install.sh | BIN_DIR=/tmp/dagger/bin DAGGER_VERSION=$DAGGER_VERSION sh
-          dagger call -m github.com/shykes/hello hello --greeting "bonjour" --name "from jenkins"
-        '''
-      }
-    }
- stage('Git Checkout') {
+    stage('Git Checkout') {
       steps {
         git 'https://github.com/ChaitanyaVamsi/maven-web-application.git'
       }
@@ -35,25 +27,25 @@ pipeline {
 
     stage('Build with Dagger') {
       steps {
-        sh '${DAGGER_CLI} do build'
+        sh '${DAGGER_CLI} run go run main.go build'
       }
     }
 
     stage('Sonar Scan with Dagger') {
       steps {
-        sh '${DAGGER_CLI} call sonar'
+        sh '${DAGGER_CLI} run go run main.go sonar'
       }
     }
 
     stage('Deploy to Nexus with Dagger') {
       steps {
-        sh '${DAGGER_CLI} call nexus'
+        sh '${DAGGER_CLI} run go run main.go deployNexus'
       }
     }
 
     stage('Deploy to Tomcat with Dagger') {
       steps {
-        sh '${DAGGER_CLI} call tomcat'
+        sh '${DAGGER_CLI} run go run main.go deployTomcat'
       }
     }
   }
@@ -72,4 +64,3 @@ pipeline {
     }
   }
 }
-
