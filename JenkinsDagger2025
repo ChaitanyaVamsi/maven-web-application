@@ -1,35 +1,22 @@
 pipeline {
-    agent any
+  agent { label 'dagger' }
 
-    stages {
-stage('Verify Dagger Installation') {
-            steps {
-                script {
-                    // Check if Dagger is installed correctly
-                    sh 'dagger version'
-                }
-            }
-        }
-        stage('Run Dagger Pipeline') {
-            steps {
-                script { 
+  // assumes that the Dagger Cloud token
+  // is in a Jenkins credential named DAGGER_CLOUD_TOKEN
+  environment {
+    DAGGER_VERSION = "0.16.2"
+    PATH = "/tmp/dagger/bin:$PATH"
+  
+  }
 
-                 
-                    sh 'python3 dagger_pipeline.py'
-                }
-            }
-        }
+  stages {
+    stage("dagger") {
+      steps {
+        sh '''
+          curl -fsSL https://dl.dagger.io/dagger/install.sh | BIN_DIR=/tmp/dagger/bin DAGGER_VERSION=$DAGGER_VERSION sh
+          dagger call -m github.com/shykes/hello hello --greeting "bonjour" --name "from jenkins"
+        '''
+      }
     }
-
-    post {
-        always {
-            echo "Pipeline execution completed."
-        }
-        success {
-            echo "Pipeline executed successfully!"
-        }
-        failure {
-            echo "Pipeline execution failed!"
-        }
-    }
+  }
 }
