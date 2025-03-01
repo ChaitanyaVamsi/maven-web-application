@@ -40,12 +40,6 @@ pipeline {
       }
     }
 
-    stage('Git Checkout') {
-      steps {
-        git 'https://github.com/ChaitanyaVamsi/maven-web-application.git'
-      }
-    }
-
     stage('Sonar Scan with Dagger') {
       steps {
         sh 'export PATH=$PATH:/usr/local/go/bin && ${DAGGER_CLI} run go run main.go sonar'
