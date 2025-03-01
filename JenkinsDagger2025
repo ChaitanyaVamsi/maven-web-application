@@ -1,13 +1,3 @@
-
-
-  // assumes that the Dagger Cloud token
-  // is in a Jenkins credential named DAGGER_CLOUD_TOKEN
-  environment {
-    DAGGER_VERSION = "0.16.2"
-    PATH = "/tmp/dagger/bin:$PATH"
-  
-
-
 pipeline {
   tools {
     maven 'maven3.9.9'
