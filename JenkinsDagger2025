@@ -1,5 +1,4 @@
-pipeline {
-  agent any
+
 
   // assumes that the Dagger Cloud token
   // is in a Jenkins credential named DAGGER_CLOUD_TOKEN
@@ -7,10 +6,30 @@ pipeline {
     DAGGER_VERSION = "0.16.2"
     PATH = "/tmp/dagger/bin:$PATH"
   
+
+
+pipeline {
+  tools {
+    maven 'maven3.9.9'
+  }
+
+  options {
+    buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '3')
+    timestamps()
+  }
+
+  agent any
+  // assumes that the Dagger Cloud token
+  // is in a Jenkins credential named DAGGER_CLOUD_TOKEN
+  environment {
+    DAGGER_VERSION = "0.16.2"
+    PATH = "/tmp/dagger/bin:$PATH"
+ DAGGER_CLI = '/usr/local/bin/dagger'
+  
   }
 
   stages {
-    stage("dagger") {
+   stage("dagger") {
       steps {
         sh '''
           curl -fsSL https://dl.dagger.io/dagger/install.sh | BIN_DIR=/tmp/dagger/bin DAGGER_VERSION=$DAGGER_VERSION sh
@@ -18,5 +37,49 @@ pipeline {
         '''
       }
     }
+    stage('Git Checkout') {
+      steps {
+        git 'https://github.com/ChaitanyaVamsi/maven-web-application.git'
+      }
+    }
+
+    stage('Build with Dagger') {
+      steps {
+        sh '${DAGGER_CLI} do build'
+      }
+    }
+
+    stage('Sonar Scan with Dagger') {
+      steps {
+        sh '${DAGGER_CLI} do sonar'
+      }
+    }
+
+    stage('Deploy to Nexus with Dagger') {
+      steps {
+        sh '${DAGGER_CLI} do nexus'
+      }
+    }
+
+    stage('Deploy to Tomcat with Dagger') {
+      steps {
+        sh '${DAGGER_CLI} do tomcat'
+      }
+    }
+  }
+
+  post {
+    always {
+      cleanWs()
+    }
+
+    success {
+      echo 'Pipeline completed successfully!'
+    }
+
+    failure {
+      echo 'Pipeline failed! Check logs.'
+    }
   }
 }
+
