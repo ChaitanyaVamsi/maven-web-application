@@ -32,13 +32,15 @@ pipeline {
     }
 
  
-    stage('Install Go') {
+   stage('Install Go') {
       steps {
         sh 'wget https://go.dev/dl/go1.20.6.linux-amd64.tar.gz'
         sh 'sudo rm -rf /usr/local/go'
         sh 'sudo tar -C /usr/local -xzf go1.20.6.linux-amd64.tar.gz'
         sh 'export PATH=$PATH:/usr/local/go/bin'
         sh 'go version'
+        sh 'echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.bashrc'
+        sh 'source ~/.bashrc'
       }
     }
 
