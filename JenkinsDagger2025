@@ -35,7 +35,7 @@ pipeline {
 
     stage('Build with Dagger') {
       steps {
-        sh '${DAGGER_CLI} call build'
+        sh '${DAGGER_CLI} do build'
       }
     }
 
