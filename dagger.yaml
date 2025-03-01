@@ -1,29 +1,34 @@
 version: '3'
-services:
+
+actions:
   build:
-    image: maven:3.9.9
-    volumes:
-      - .:/app
-    working_dir: /app
-    command: mvn clean package
+    steps:
+      - use: docker.io/library/maven:3.9.9
+      - mount: .
+        to: /app
+      - workdir: /app
+      - exec: ["mvn", "clean", "package"]
 
   sonar:
-    image: maven:3.9.9
-    volumes:
-      - .:/app
-    working_dir: /app
-    command: mvn sonar:sonar
+    steps:
+      - use: docker.io/library/maven:3.9.9
+      - mount: .
+        to: /app
+      - workdir: /app
+      - exec: ["mvn", "sonar:sonar"]
 
   nexus:
-    image: maven:3.9.9
-    volumes:
-      - .:/app
-    working_dir: /app
-    command: mvn deploy
+    steps:
+      - use: docker.io/library/maven:3.9.9
+      - mount: .
+        to: /app
+      - workdir: /app
+      - exec: ["mvn", "deploy"]
 
   tomcat:
-    image: alpine:latest
-    volumes:
-      - .:/app
-    working_dir: /app
-    command: scp target/maven-web-application.war /opt/tomcat/webapps/
+    steps:
+      - use: docker.io/library/alpine:latest
+      - mount: .
+        to: /app
+      - workdir: /app
+      - exec: ["scp", "target/maven-web-application.war", "/opt/tomcat/webapps/"]
