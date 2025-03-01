@@ -1,0 +1,29 @@
+version: '3'
+services:
+  build:
+    image: maven:3.9.9
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: mvn clean package
+
+  sonar:
+    image: maven:3.9.9
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: mvn sonar:sonar
+
+  nexus:
+    image: maven:3.9.9
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: mvn deploy
+
+  tomcat:
+    image: alpine:latest
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: scp target/maven-web-application.war /opt/tomcat/webapps/
