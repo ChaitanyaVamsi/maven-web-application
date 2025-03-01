@@ -31,12 +31,6 @@ pipeline {
       }
     }
 
- stage('Build with Dagger') {
-  steps {
-    sh '${DAGGER_CLI} run --container golang:1.20 go run main.go build'
-  }
-}
-
 stage('Sonar Scan with Dagger') {
   steps {
     sh '${DAGGER_CLI} run --container golang:1.20 go run main.go sonar'
