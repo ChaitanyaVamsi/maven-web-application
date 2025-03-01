@@ -39,11 +39,10 @@ pipeline {
         sh 'sudo tar -C /usr/local -xzf go1.20.6.linux-amd64.tar.gz'
         sh 'export PATH=$PATH:/usr/local/go/bin'
         sh 'go version'
-        sh 'echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.bashrc'
-        sh 'source ~/.bashrc'
+        sh 'echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.bash_profile'
+        sh 'source ~/.bash_profile'
       }
     }
-
     stage('Sonar Scan with Dagger') {
       steps {
         sh 'export PATH=$PATH:/usr/local/go/bin && ${DAGGER_CLI} run go run main.go sonar'
