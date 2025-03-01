@@ -31,23 +31,31 @@ pipeline {
       }
     }
 
-    stage('Sonar Scan with Dagger') {
-      steps {
-        sh '${DAGGER_CLI} run go run main.go sonar'
-      }
-    }
+ stage('Build with Dagger') {
+  steps {
+    sh '${DAGGER_CLI} run --container golang:1.20 go run main.go build'
+  }
+}
 
-    stage('Deploy to Nexus with Dagger') {
-      steps {
-        sh '${DAGGER_CLI} run go run main.go deployNexus'
-      }
-    }
+stage('Sonar Scan with Dagger') {
+  steps {
+    sh '${DAGGER_CLI} run --container golang:1.20 go run main.go sonar'
+  }
+}
 
-    stage('Deploy to Tomcat with Dagger') {
-      steps {
-        sh '${DAGGER_CLI} run go run main.go deployTomcat'
-      }
-    }
+stage('Deploy to Nexus with Dagger') {
+  steps {
+    sh '${DAGGER_CLI} run --container golang:1.20 go run main.go deployNexus'
+  }
+}
+
+stage('Deploy to Tomcat with Dagger') {
+  steps {
+    sh '${DAGGER_CLI} run --container golang:1.20 go run main.go deployTomcat'
+  }
+}
+
+
   }
 
   post {
