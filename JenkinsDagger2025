@@ -27,7 +27,7 @@ pipeline {
         '''
       }
     }
-    stage('Git Checkout') {
+ stage('Git Checkout') {
       steps {
         git 'https://github.com/ChaitanyaVamsi/maven-web-application.git'
       }
@@ -35,25 +35,25 @@ pipeline {
 
     stage('Build with Dagger') {
       steps {
-        sh '${DAGGER_CLI} run build'
+        sh '${DAGGER_CLI} call build'
       }
     }
 
     stage('Sonar Scan with Dagger') {
       steps {
-        sh '${DAGGER_CLI} run sonar'
+        sh '${DAGGER_CLI} call sonar'
       }
     }
 
     stage('Deploy to Nexus with Dagger') {
       steps {
-        sh '${DAGGER_CLI} run nexus'
+        sh '${DAGGER_CLI} call nexus'
       }
     }
 
     stage('Deploy to Tomcat with Dagger') {
       steps {
-        sh '${DAGGER_CLI} run tomcat'
+        sh '${DAGGER_CLI} call tomcat'
       }
     }
   }
