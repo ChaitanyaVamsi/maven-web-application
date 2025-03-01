@@ -1,5 +1,5 @@
 pipeline {
-  agent { label 'dagger' }
+  agent any
 
   // assumes that the Dagger Cloud token
   // is in a Jenkins credential named DAGGER_CLOUD_TOKEN
